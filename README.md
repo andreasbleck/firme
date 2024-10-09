@@ -1,6 +1,6 @@
 # firme
 
-##como rodar
+## como rodar
 
 instalar dependências:
 ```
