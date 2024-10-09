@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Firme</title>
+    <link rel="stylesheet" href="./assets/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/nanoscroller.min.css">
+    <link rel="stylesheet" href="./assets/firme.css">
+</head>
+<body>
+
+    <div class="nano nano-custom">
+      <div class="nano-content">
+    
+        <div class="navbar-container">
+            <nav class="navbar sticky-top navbar-dark justify-content-between py-0">
+                <ul class="nav navbar-nav">
+                    <li><a class="navbar-brand py-0" href="javascript:voltarListaSalas()">🠔 Voltar</a></li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li>Sala atual: <span id="roomname"></span> - Usuários: <span id="roomusers"></span> - Ping: <span id="latency"></span></li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li id="userdata"></li>
+                </ul>
+                <ul class="nav navbar-nav" id="showchatbutton" style="display:none;">
+                    <li>
+                    <button class="btn btn-secondary btn-sm" type="button" onclick='$(".player-container").width("");$(".chat-container").show();$("#showchatbutton").hide();'>Mostrar chat</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="top-container">
+            <div class="player-container inline-block">
+                <div id="player"></div>
+            </div><div class="chat-container inline-block">
+                <div class="chat">
+                    <div id="syncdata" class="center"></div>
+                    <div id="buttons" class="center">
+                        <button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#modal-link" onclick="$('#video-link').val('');">Trocar vídeo da sala</button>
+                        <button class="btn btn-secondary btn-sm" type="button" onclick="$('.chat-container').hide();$('.player-container').width('100%');$('#showchatbutton').show();">Esconder chat</button>
+                    </div>
+                    <div class="nano nano-chat"><div class="nano-content">
+                        <div class="chat-messages">
+                            <div class="chat-message center">Bem vindo ao chat 🙂</div>
+                            <div class="chat-message">Comandos disponíveis:</div>
+                            <div class="chat-message">&emsp;/link [url]</div>
+                            <div class="chat-message">&emsp;/youtube [texto]</div>
+                            <div class="chat-message">&emsp;/volume [0 a 100]</div>
+                        </div>
+                    </div></div>
+                    <form onsubmit="return sendChat();">
+                        <div class="chat-input input-group">
+                            <input class="form-control" id="chat-text" type="text" placeholder="Digite aqui..." size="26" data-meteor-emoji="true">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">Chat</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="roomdata" class="center">Tocando agora: <span id="videoname"></span></div>
+        
+        <div id="syncaudio"></div>
+        
+        <div class="overlay">
+            <div class="center middle">
+                <br><span id="overlayheader"></span>
+                <br><br>
+                <h1 id="overlaytitle"></h1>
+                <br>
+                <div id="overlaycontent" class="center">
+                    <br><br><span id="loadtext">Carregando...</span><br><br>
+                    <div class="progress center" style="max-width: 50vw;">
+                        <div id="loadingbar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="modal-link" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title text-dark">Trocar vídeo da sala</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <input class="form-control" id="video-link" type="text" placeholder="Cole aqui o link...">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="bypass">
+                  <label class="form-check-label text-dark" for="bypass">
+                    Link direto
+                  </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="setLink($('#video-link').val(), $('#bypass').is(':checked'));">Alterar Vídeo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+    </div>
+    
+    <script>
+        var loaded = 0;
+        var maxload = 14;
+        var loadbar = document.getElementById("loadingbar");
+        
+        function progressload() {
+            loaded++;
+            loadbar.style.width = (loaded/maxload*100) + "%";
+        }
+        
+        window.addEventListener("load", function(event) {
+            progressload();
+        });
+        
+        function loaderror() {
+            document.getElementById("loadtext").innerHTML = "Erro ao conectar ao socket, servidor não está rodando?";
+            loadbar.classList.add("bg-danger");
+        }
+        
+    </script>
+    
+    <script onload="progressload();" src="./assets/dash.all.min.js"></script>
+    <script onload="progressload();" src="./assets/hls.min.js"></script>
+    <script onload="progressload();" src="./assets/jquery-1.12.0.min.js"></script>
+    <script onload="progressload();" src="./assets/popper.min.js"></script>
+    <script onload="progressload();" src="./assets/bootstrap.min.js"></script>
+    <script onload="progressload();" src="./assets/jquery.nanoscroller.min.js"></script>
+    <script onload="progressload();" src="./assets/inputhistory.js"></script>
+    <script onload="progressload();" src="./assets/anchorme.min.js"></script>
+    <script onload="progressload();" src="./assets/meteorEmoji.min.js"></script>
+    <script onload="progressload();" src="./assets/ovenplayer.js"></script>
+    <script onload="progressload();" src="./socket.io/socket.io.js" onerror="loaderror();"></script>
+    <script onload="progressload();" src="./assets/firme.js"></script>
+</body>
+</html>
